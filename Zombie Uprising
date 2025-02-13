@@ -1,0 +1,59 @@
+--> Gun Mods | Zombie Uprising | By: unauth0rised on discord
+local StarterGui = game:GetService("StarterGui")
+local ReplicatedFirst = game:GetService("ReplicatedFirst")
+StarterGui:SetCore("SendNotification", {
+    Title = "Zombie Uprising",
+    Text = "Equip your gun again!",
+    Duration = 5
+})
+
+for i,v in next, getsenv(ReplicatedFirst.Framework) do
+    if type(v) == "function" then
+        for i, v in next, debug.getupvalues(v) do
+            if type(v) == "table" then
+                for i, v in next, v do
+                    if i == "gunmodulestorage" then
+                        for i, v in next, v do
+                            if v.spread then
+                                v.spread = {
+                                    Increase = 0,
+                                    Decrease = 0,
+                                    Max = 0,
+                                    Min = 0
+                                }
+                            end
+                            if v.mode then
+                                v.mode = "Auto"
+                            end
+                            if v.recoil then
+                                v.recoil = {
+                                    Aimed = 0,
+                                    FirstShot = 0,
+                                    Tilt = {
+                                        [1] = 0,
+                                        [2] = 0,
+                                    },
+                                    Side = {
+                                        [1] = 0,
+                                        [2] = 0,
+                                    },
+                                    Vertical = {
+                                        [1] = 0,
+                                        [2] = 0,
+                                    },
+                                    Back = {
+                                        [1] = 0,
+                                        [2] = 0,
+                                    },
+                                }
+                            end
+                            if v.rpm then
+                                v.rpm = 1000000000000000 --> buggy as hell, comment it out if you dont want it1!!
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
