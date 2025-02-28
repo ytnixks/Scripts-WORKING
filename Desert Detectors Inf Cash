@@ -1,0 +1,5 @@
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local Remote = ReplicatedStorage.Purchase_Crate
+local Amount = 10000000000 -- Amount of cash you want (math.huge = inf)
+
+Remote:FireServer(-(Amount / 120))
