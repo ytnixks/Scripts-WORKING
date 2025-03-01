@@ -1,0 +1,10 @@
+for i , v in pairs(getgc(true)) do 
+    if type(v) == "table" and rawget(v,"FireRate") then
+        v.FireRate = 5000
+        v.Range = Vector2.new(99999999, 99999999)
+        v.MagnetStrength = 1000
+        v.AmmoCapacity = math.huge
+        v.ReloadTime = 0
+        v.ReloadEmptyTime = 0
+    end
+end
