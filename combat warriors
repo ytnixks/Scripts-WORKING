@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://lumin-hub.lol/cw.lua",true))()
