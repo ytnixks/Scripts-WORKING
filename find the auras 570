@@ -1,0 +1,5 @@
+--U need to change AuraName --
+local AuraName = Workspace.Morphs:WaitForChild("Electro Core Aura")--WRITE AURA NAME HERE DNT FORGET "" OR ''
+local Posi = AuraName.Position + Vector3.new(0,5,0)
+
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Posi)
