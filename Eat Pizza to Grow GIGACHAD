@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/pl0o0/EatPizzaToGrowGigaChad/refs/heads/main/Main.lua"))()
