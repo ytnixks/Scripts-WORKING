@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/freshdotmp3/Fresh-s-Script/refs/heads/main/Zombie%20Attack.lua"))()
