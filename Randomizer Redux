@@ -1,0 +1,71 @@
+getgenv().killaura = true
+getgenv().killaura_distance = 30
+
+local players = game:GetService("Players")
+local rs = game:GetService("RunService")
+
+local lp = players.LocalPlayer
+local camera = workspace.Camera
+local ccamera = workspace.CurrentCamera
+
+local melee = nil
+local lastchar = nil
+
+local function isAlive(player)
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health > 0 then
+        return true
+    end
+end
+
+local function getmelee(character)
+    for _, item in ipairs(character:GetChildren()) do
+        if item:IsA("Tool") and item:FindFirstChild("MeleeServer") then
+            return item
+        end
+    end
+    return nil
+end
+
+local function gettarget()
+    if not isAlive(lp) then return end
+    if not lp.Character:FindFirstChild("Head") then return end
+    
+    for _, player in ipairs(players:GetPlayers()) do
+        if player ~= lp and isAlive(player) and player.Character:FindFirstChild("Head") and not player.Character:FindFirstChildWhichIsA("ForceField") then
+            if (lp.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude <= getgenv().killaura_distance then
+                return player
+            end
+        end
+    end
+end
+
+local function refreshwep(character) -- retarded method
+    melee = nil
+    lastchar = character
+    
+    task.delay(1, function()
+        if character == lastchar then
+            melee = getmelee(character)
+        end
+    end)
+end
+
+if lp.Character then
+    refreshwep(lp.Character)
+end
+lp.CharacterAdded:Connect(refreshwep)
+
+rs.Heartbeat:Connect(function()
+    if not getgenv().killaura then return end
+    if not isAlive(lp) then return end
+    
+    if not melee or not melee.Parent then -- wep switching handler
+        melee = getmelee(lp.Character)
+        if not melee then return end
+    end
+    
+    local target = gettarget()
+    if target and melee and melee:FindFirstChild("MeleeServer") then
+        melee.MeleeServer.Hit:InvokeServer(target.Character.Humanoid)
+    end
+end)
