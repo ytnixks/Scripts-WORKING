@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/sixsensed/RblxScripts/main/Beaks.lua"))()
