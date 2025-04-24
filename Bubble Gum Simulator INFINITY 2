@@ -1,4 +1,11 @@
 getgenv().UserPreference = {
-    ['AutoReloadOnRejoin'] = true,
-}; 
+    MinimumRiftMultipliers = {
+        --['Pastel Egg'] = 25,
+    },
+    RiftPriorities = {
+        --'Rainbow Egg',
+        --'Nightmare Egg',
+    }
+}
+
 loadstring(game:HttpGet('https://raw.githubusercontent.com/0vma/Strelizia/refs/heads/main/Loader.lua', true))()
