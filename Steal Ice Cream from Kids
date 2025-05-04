@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/L0stVeil/LocalScripts/refs/heads/main/1stL0st"), "by l0stveil")() -- be careful while using cuz dev checks on leaderboards if theres million points or billion whatever you do dont do 1e19 or math.huge
