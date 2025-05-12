@@ -1,0 +1,17 @@
+getgenv().UserPreference = {
+    MinimumRiftMultipliers = {
+        ['Pastel Egg'] = 25,
+    },
+    RiftPriorities = {
+        'Rainbow Egg',
+        'Nightmare Egg',
+    },
+    QuestPriority = {
+        "Egg",
+        "Rarity",
+        "Shiny",
+        "Mythic"
+    }
+}
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/0vma/Strelizia/refs/heads/main/Loader.lua"))()
