@@ -1,0 +1,7 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local rewardEvent = ReplicatedStorage:WaitForChild("Events"):WaitForChild("Reward")
+
+while true do
+    rewardEvent:FireServer()
+    task.wait(0.01)
+end
