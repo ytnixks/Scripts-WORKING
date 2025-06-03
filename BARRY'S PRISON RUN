@@ -1,0 +1,35 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+
+local SaveDataEvent = ReplicatedStorage:WaitForChild("RemoteEventsFolder"):WaitForChild("SavaDataEvent")
+local StageChangeEvent = ReplicatedStorage:WaitForChild("RemoteEventsFolder"):WaitForChild("StageChange")
+
+local maxStage = 24
+local delayBetweenStages = 0.01
+
+local function autoStage()
+    local player = Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local hrp = character:WaitForChild("HumanoidRootPart")
+
+    for stage = 1, maxStage do
+        StageChangeEvent:FireServer(stage)
+        SaveDataEvent:FireServer()
+        
+        if stage == maxStage then
+            local winnersHelicopterFolder = Workspace:WaitForChild("LocalObjects"):WaitForChild("WinnersHelicopter")
+            local goPart = winnersHelicopterFolder:WaitForChild("go")
+            hrp.CFrame = goPart.CFrame + Vector3.new(0, 3, 0)
+            if typeof(firetouchinterest) == "function" then
+                firetouchinterest(hrp, goPart, 0)
+                task.wait(0.1)
+                firetouchinterest(hrp, goPart, 1)
+            end
+        end
+
+        task.wait(delayBetweenStages)
+    end
+end
+
+autoStage()
