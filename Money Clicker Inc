@@ -1,0 +1,166 @@
+-- GUI Setup
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+ScreenGui.Name = "AutoFarmGUI"
+
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.Size = UDim2.new(0, 240, 0, 380)
+Frame.Position = UDim2.new(0, 100, 0, 100)
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.Active = true
+Frame.Draggable = true
+
+-- Loop Flags
+local flags = {
+	AutoClick = false,
+	AutoGem = false,
+	AutoMine = false,
+	Upgrade = {
+		[1] = false,
+		[2] = false,
+		[3] = false
+	}
+}
+local clickCount = 0
+
+-- Function: Create Toggle Button
+local function createLoopButton(name, yPos, label, toggleCallback)
+	local button = Instance.new("TextButton", Frame)
+	button.Size = UDim2.new(0, 220, 0, 30)
+	button.Position = UDim2.new(0, 10, 0, yPos)
+	button.BackgroundColor3 = Color3.fromRGB(70, 70, 180)
+	button.TextColor3 = Color3.new(1, 1, 1)
+	button.Font = Enum.Font.SourceSansBold
+	button.TextSize = 16
+	button.Text = label .. ": OFF"
+
+	button.MouseButton1Click:Connect(function()
+		flags[name] = not flags[name]
+		button.Text = label .. ": " .. (flags[name] and "ON" or "OFF")
+		toggleCallback(flags[name])
+	end)
+
+	return button
+end
+
+-- AutoGem
+createLoopButton("AutoGem", 10, "AutoGem", function(state)
+	if state then
+		task.spawn(function()
+			while flags.AutoGem do
+				pcall(function()
+					game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("ClickMoney"):WaitForChild("ClickGem"):FireServer()
+				end)
+				task.wait()
+			end
+		end)
+	end
+end)
+
+-- AutoMine
+createLoopButton("AutoMine", 45, "AutoMine", function(state)
+	if state then
+		task.spawn(function()
+			while flags.AutoMine do
+				pcall(function()
+					game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("ClickMoney"):WaitForChild("ClickMining"):FireServer()
+				end)
+				task.wait()
+			end
+		end)
+	end
+end)
+
+-- AutoClick
+local autoClickBtn = Instance.new("TextButton", Frame)
+autoClickBtn.Size = UDim2.new(0, 220, 0, 40)
+autoClickBtn.Position = UDim2.new(0, 10, 0, 85)
+autoClickBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 127)
+autoClickBtn.Text = "AutoClick: OFF"
+autoClickBtn.TextColor3 = Color3.new(1, 1, 1)
+autoClickBtn.Font = Enum.Font.SourceSansBold
+autoClickBtn.TextSize = 18
+
+-- Click Counter
+local ClickLabel = Instance.new("TextLabel", Frame)
+ClickLabel.Size = UDim2.new(0, 220, 0, 25)
+ClickLabel.Position = UDim2.new(0, 10, 0, 130)
+ClickLabel.BackgroundTransparency = 1
+ClickLabel.TextColor3 = Color3.new(1, 1, 1)
+ClickLabel.Text = "Clicks: 0"
+ClickLabel.Font = Enum.Font.SourceSans
+ClickLabel.TextSize = 16
+
+-- Hide/Show Button
+local HideButton = Instance.new("TextButton", Frame)
+HideButton.Size = UDim2.new(0, 220, 0, 25)
+HideButton.Position = UDim2.new(0, 10, 0, 160)
+HideButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+HideButton.Text = "Hide"
+HideButton.TextColor3 = Color3.new(1, 1, 1)
+HideButton.Font = Enum.Font.SourceSansBold
+HideButton.TextSize = 16
+
+-- AutoClick Logic
+autoClickBtn.MouseButton1Click:Connect(function()
+	flags.AutoClick = not flags.AutoClick
+	autoClickBtn.Text = flags.AutoClick and "AutoClick: ON" or "AutoClick: OFF"
+
+	if flags.AutoClick then
+		task.spawn(function()
+			while flags.AutoClick do
+				pcall(function()
+					game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("ClickMoney"):FireServer()
+					clickCount += 1
+					ClickLabel.Text = "Clicks: " .. tostring(clickCount)
+				end)
+				task.wait()
+			end
+		end)
+	end
+end)
+
+-- Hide/Show Logic
+HideButton.MouseButton1Click:Connect(function()
+	local state = autoClickBtn.Visible
+	for _, v in pairs(Frame:GetChildren()) do
+		if v:IsA("TextButton") or v:IsA("TextLabel") then
+			if v ~= HideButton then
+				v.Visible = not state
+			end
+		end
+	end
+	HideButton.Text = state and "Show" or "Hide"
+end)
+
+-- Upgrade Buttons with Loop
+local function createUpgradeButton(upgradeID, yPos)
+	local btn = Instance.new("TextButton", Frame)
+	btn.Size = UDim2.new(0, 220, 0, 30)
+	btn.Position = UDim2.new(0, 10, 0, yPos)
+	btn.BackgroundColor3 = Color3.fromRGB(120, 80, 180)
+	btn.TextColor3 = Color3.new(1, 1, 1)
+	btn.Font = Enum.Font.SourceSansBold
+	btn.TextSize = 16
+	btn.Text = "Upgrade " .. upgradeID .. ": OFF"
+
+	btn.MouseButton1Click:Connect(function()
+		flags.Upgrade[upgradeID] = not flags.Upgrade[upgradeID]
+		btn.Text = "Upgrade " .. upgradeID .. ": " .. (flags.Upgrade[upgradeID] and "ON" or "OFF")
+
+		if flags.Upgrade[upgradeID] then
+			task.spawn(function()
+				while flags.Upgrade[upgradeID] do
+					pcall(function()
+						game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Upgrade"):FireServer(upgradeID, false)
+					end)
+					task.wait(0.2)
+				end
+			end)
+		end
+	end)
+end
+
+-- Upgrade 1, 2, 3
+createUpgradeButton(1, 195)
+createUpgradeButton(2, 230)
+createUpgradeButton(3, 265)
