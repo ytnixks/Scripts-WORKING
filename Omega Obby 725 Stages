@@ -1,0 +1,68 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+
+local function getHRP()
+    if player.Character and player.Character.Parent then
+        return player.Character:FindFirstChild("HumanoidRootPart")
+    end
+    return nil
+end
+
+local humanoidRootPart = getHRP()
+player.CharacterAdded:Connect(function(char)
+    char:WaitForChild("HumanoidRootPart")
+    humanoidRootPart = char:FindFirstChild("HumanoidRootPart")
+end)
+
+while not humanoidRootPart do
+    player.CharacterAdded:Wait()
+    humanoidRootPart = getHRP()
+end
+
+local function fetchStageLevel()
+    local stageLevel = 1
+    local statsFolder = player:FindFirstChild("leaderstats")
+    if statsFolder then
+        local stageValue = statsFolder:FindFirstChild("Stage")
+        if stageValue and tonumber(stageValue.Value) then
+            stageLevel = tonumber(stageValue.Value)
+        end
+    end
+    return stageLevel
+end
+
+local stagesFolder = workspace:WaitForChild("Stages")
+local delayBetweenStages = 0.1
+local maxStageNumber = 727
+
+local function autoCompleteStages()
+    local currentStage = fetchStageLevel()
+    local startStage = math.max(currentStage + 1, 1)
+
+    for stageNumber = startStage, maxStageNumber do
+        local stageFolder = stagesFolder:FindFirstChild(tostring(stageNumber))
+        if stageFolder then
+            local spawnPart = stageFolder:FindFirstChild("Spawn")
+            if spawnPart and spawnPart:FindFirstChildOfClass("TouchTransmitter") then
+                if not humanoidRootPart or not humanoidRootPart.Parent then
+                    return
+                end
+
+                humanoidRootPart.CFrame = spawnPart.CFrame + Vector3.new(0, 3, 0)
+                task.wait(0.05)
+
+                firetouchinterest(humanoidRootPart, spawnPart, 0)
+                firetouchinterest(humanoidRootPart, spawnPart, 1)
+
+                task.wait(delayBetweenStages)
+            end
+        end
+    end
+end
+
+if RunService:IsClient() then
+    task.wait(1)
+    autoCompleteStages()
+end
