@@ -1,0 +1,3 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/1-16AM/xena/refs/heads/main/main.lua"))()
+
+discord to get key: https://discord.gg/RmY7zhpq
