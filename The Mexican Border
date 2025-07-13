@@ -1,0 +1,3 @@
+getgenv().FarmRate = 100 -- higher = laggier
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/inkdupe/scripts/refs/heads/main/themexicanborder.lua", true))()
