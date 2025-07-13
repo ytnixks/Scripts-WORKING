@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/forkT3/SCX-Hub/main/SCX-hub-Loader.lua"))()
