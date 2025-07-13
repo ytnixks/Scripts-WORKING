@@ -1,0 +1,30 @@
+local replicated_storage = game:GetService("ReplicatedStorage")
+local workspace = game:GetService("Workspace")
+
+local fish_base_class = require(replicated_storage:FindFirstChild("Fish"):FindFirstChild("Script"):FindFirstChild("FishBaseClass"))
+if not fish_base_class then
+    return print("Fish base class module not found!")
+end
+
+local fish = workspace:FindFirstChild("FishModelList")
+if not fish then
+    return print("Fish folder not found!")
+end
+
+getgenv().collect_all = true
+
+if getgenv().collect_all then
+    repeat
+        local fish_uids = {}
+        for _, v in fish:GetChildren() do
+            local success, fish_object = fish_base_class:GetFishObjectByModel(v)
+            if success and fish_object then
+                local _, uid = fish_object:GetUId()
+                table.insert(fish_uids, uid)
+            end
+        end
+        replicated_storage:WaitForChild("Harpoon"):WaitForChild("Remote"):WaitForChild("ApplyCaptureResult"):InvokeServer({ Radius = 9e999, Center = vector.create(0, 0, 0), FishList = fish_uids })
+        replicated_storage:WaitForChild("StoreSystem"):WaitForChild("Remote"):WaitForChild("ApplySellProduct"):InvokeServer(true)
+        task.wait()
+    until not getgenv().collect_all
+end
