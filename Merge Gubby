@@ -1,0 +1,154 @@
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local rs = game:GetService("ReplicatedStorage")
+
+local gui = Instance.new("ScreenGui", PlayerGui)
+gui.Name = "RainbowEdgeGui"
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 320, 0, 90)
+frame.Position = UDim2.new(0.5, -160, 0.5, -45)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+
+local topBar = Instance.new("Frame", frame)
+topBar.Size = UDim2.new(1, 0, 0, 35)
+topBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+topBar.BorderSizePixel = 0
+
+Instance.new("UICorner", topBar).CornerRadius = UDim.new(0, 12)
+
+local function addRainbowGradient(parent)
+	local grad = Instance.new("UIGradient", parent)
+	grad.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+		ColorSequenceKeypoint.new(0.2, Color3.fromRGB(255, 127, 0)),
+		ColorSequenceKeypoint.new(0.4, Color3.fromRGB(255, 255, 0)),
+		ColorSequenceKeypoint.new(0.6, Color3.fromRGB(0, 255, 0)),
+		ColorSequenceKeypoint.new(0.8, Color3.fromRGB(0, 0, 255)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(139, 0, 255)),
+	}
+	grad.Rotation = 45
+	local tweenService = game:GetService("TweenService")
+	local info = TweenInfo.new(4, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1, true)
+	tweenService:Create(grad, info, {Rotation = 405}):Play()
+end
+
+addRainbowGradient(frame)
+addRainbowGradient(topBar)
+
+local discordLabel = Instance.new("TextLabel", topBar)
+discordLabel.Size = UDim2.new(0, 200, 1, 0)
+discordLabel.Position = UDim2.new(0, 10, 0, 0)
+discordLabel.BackgroundTransparency = 1
+discordLabel.Text = "discord:1w69"
+discordLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+discordLabel.Font = Enum.Font.SourceSansBold
+discordLabel.TextSize = 16
+discordLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+local langBtn = Instance.new("TextButton", topBar)
+langBtn.Size = UDim2.new(0, 90, 0, 30)
+langBtn.Position = UDim2.new(0.5, -45, 0, 2)
+langBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+langBtn.TextColor3 = Color3.fromRGB(30, 30, 30)
+langBtn.Font = Enum.Font.SourceSansBold
+langBtn.TextSize = 14
+langBtn.Text = "English"
+langBtn.AutoButtonColor = true
+Instance.new("UICorner", langBtn).CornerRadius = UDim.new(0, 12)
+
+local closeBtn = Instance.new("TextButton", topBar)
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -40, 0, 2)
+closeBtn.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
+closeBtn.Text = "❌"
+closeBtn.TextColor3 = Color3.new(1, 1, 1)
+closeBtn.Font = Enum.Font.SourceSansBold
+closeBtn.TextSize = 20
+Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 12)
+
+closeBtn.MouseButton1Click:Connect(function()
+	gui:Destroy()
+end)
+
+local buttonHolder = Instance.new("Frame", frame)
+buttonHolder.Size = UDim2.new(1, 0, 0, 50)
+buttonHolder.Position = UDim2.new(0, 0, 0, 35)
+buttonHolder.BackgroundTransparency = 1
+
+local UIList = Instance.new("UIListLayout", buttonHolder)
+UIList.Padding = UDim.new(0, 10)
+UIList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIList.SortOrder = Enum.SortOrder.LayoutOrder
+
+local function createButton(text)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(0.8, 0, 0, 40)
+	btn.BackgroundColor3 = Color3.fromRGB(40, 70, 120)
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.Font = Enum.Font.SourceSansBold
+	btn.TextSize = 18
+	btn.Text = text
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 12)
+	addRainbowGradient(btn)
+	btn.Parent = buttonHolder
+	return btn
+end
+
+local isArabic = true
+local isRunning = false
+local btn1 = createButton("مال و جواهر و إعادة ميلاد")
+
+local autoEvent
+local RunService = game:GetService("RunService")
+
+btn1.MouseButton1Click:Connect(function()
+	isRunning = not isRunning
+
+	local remote13 = rs.Remotes.FreeSpinEvent
+	local remote51 = rs.Remotes.MysteryBoxEvent
+
+	if isRunning then
+		autoEvent = RunService.Heartbeat:Connect(function()
+			pcall(function()
+				remote13:FireServer()
+				remote51:FireServer()
+			end)
+			wait(0.2)
+		end)
+	else
+		if autoEvent then
+			autoEvent:Disconnect()
+			autoEvent = nil
+		end
+	end
+
+	btn1.Text = (isArabic and (isRunning and "✅ مال و جواهر و عجلة دوران" or "❌ مال و جواهر و عجلة دوران"))
+		or (isRunning and "✅ Money and spin and Gems" or "❌ Money and spin and Gems")
+end)
+
+local function updateLanguage()
+	if isArabic then
+		btn1.Text = (isRunning and "✅ مال و جواهر و عجلة دوران" or "❌ مال و جواهر و عجلة دوران")
+		langBtn.Text = "English"
+		discordLabel.Text = "discord:1w69"
+	else
+		btn1.Text = (isRunning and "✅ Money and spin and Gems" or "❌ Money and spin and Gems")
+		langBtn.Text = "عربي"
+		discordLabel.Text = "discord:1w69"
+	end
+end
+
+langBtn.MouseButton1Click:Connect(function()
+	isArabic = not isArabic
+	updateLanguage()
+end)
+
+updateLanguage()
