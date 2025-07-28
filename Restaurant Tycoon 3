@@ -1,0 +1,5 @@
+loadstring(
+    game:HttpGet(
+        'https://raw.githubusercontent.com/kylosilly/Astolfo-Ware-V2/refs/heads/main/Loader.lua'
+    )
+)()
