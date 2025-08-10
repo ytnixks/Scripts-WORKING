@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ecrxks273/climb-and-slide/refs/heads/main/climb%20and%20slide"))()
