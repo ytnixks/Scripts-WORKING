@@ -1,0 +1,52 @@
+
+--== Here Script ==--
+local Venix = loadstring(game:HttpGet("https://raw.githubusercontent.com/darkMaster549/Aux-Hub-Script-/refs/heads/main/Venix.lua"))()
+
+--// Create Window \\ --
+local win = Venix.CreateWindow({
+    Title = "•Aux♠Hub•",
+    Size = UDim2.fromOffset(200, 150),
+    Position = UDim2.fromOffset(120, 100)
+})
+
+--// Services \\--
+local RS = game:GetService("ReplicatedStorage")
+local Remotes = RS:WaitForChild("Networking"):WaitForChild("Server"):WaitForChild("RemoteEvents"):WaitForChild("DamageEvents")
+
+-- args for each remote
+local baseballArgs = {
+    Vector3.new(-3.72346568107605, 2.8309199810028076, -0.013234120793640614),
+    12.168801650810206
+}
+local grenadeArgs = {
+    Vector3.new(-21.8129825592041, 3.0931053161621094, -0.0006826695171184838),
+    1.6589272022247314
+}
+local physicsArgs = {
+    43.28071975708008,
+    Vector3.new(-13.374950408935547, 3.483245611190796, 0.08221215754747391)
+}
+local taserArgs = {
+    Vector3.new(-21.883464813232422, 2.7776761054992676, -0.00024636523448862135)
+}
+
+-- toggle state--
+local farming = false
+
+--// Add Toggle \\ --
+win:AddToggle("Infinite Cash", false, function(state)
+    farming = state
+    if farming then
+        task.spawn(function()
+            while farming do
+                for i = 1, 2 do -- Change The 2 to whatever you want Make it more Faster 
+                    Remotes:WaitForChild("BaseballDamage"):FireServer(unpack(baseballArgs))
+                    Remotes:WaitForChild("GrenadeDamage"):FireServer(unpack(grenadeArgs))
+                    Remotes:WaitForChild("PhysicsDamage"):FireServer(unpack(physicsArgs))
+                    Remotes:WaitForChild("TaserDamage"):FireServer(unpack(taserArgs))
+                end
+                task.wait(0.1) 
+            end
+        end)
+    end
+end)
