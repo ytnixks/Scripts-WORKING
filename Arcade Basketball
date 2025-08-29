@@ -1,0 +1,15 @@
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+
+local clothingAssets = ReplicatedStorage:WaitForChild("ClothingAssets")
+local inventory = Players.LocalPlayer:WaitForChild("Profile"):WaitForChild("Inventory")
+
+for _, folder in ipairs(clothingAssets:GetChildren()) do
+    local targetFolder = inventory:FindFirstChild(folder.Name)
+    if targetFolder then
+        for _, item in ipairs(folder:GetChildren()) do
+            item:Clone().Parent = targetFolder
+        end
+    end
+end
