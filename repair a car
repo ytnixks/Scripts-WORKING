@@ -1,0 +1,138 @@
+--[[
+	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
+]]
+-- made by @kylosilly on discord report bugs to me pls :3
+local replicated_storage = game:GetService('ReplicatedStorage')
+local local_player = game:GetService('Players').LocalPlayer
+
+local humanoid = local_player.Character:WaitForChild('Humanoid')
+
+local net = replicated_storage.Shared.RBXUtil.Net
+
+local paint_rust = net['URE/Paint Part']
+local fix_rust = net['URE/Fix Rust']
+
+local paint_color =
+    Color3.new(0.8107843995094299, 0.2925563454627991, 0.25150859355926514)
+
+local rust_instances = {
+    'UnionOperation',
+    'WedgePart',
+    'Part',
+}
+
+getgenv().farm = not getgenv().farm
+
+if getgenv().farm then
+    repeat
+        local car_data = {}
+
+        for _, car_order in local_player:GetChildren() do
+            if not car_order.Name:find('OrderConfig') then
+                continue
+            end
+            local order_index = car_order:FindFirstChild('OrderIndex')
+            local car_object = car_order:FindFirstChild('CarObject')
+            if (not order_index) or not car_object then
+                continue
+            end
+            data = {
+                ['order_index'] = order_index.Value,
+                ['car_object'] = car_object.Value,
+                ['required_parts'] = {}, -- remote, type
+            }
+            table.insert(car_data, data)
+        end
+
+        local data = car_data
+
+        if #data == 0 then
+            return print('no cars')
+        end
+
+        for _, car in data do
+            local object = car.car_object
+            local car_body = object:FindFirstChildWhichIsA('Model')
+            if not car_body then
+                continue
+            end
+            local dirt_folder = car_body:FindFirstChild('Dirt')
+            if dirt_folder then
+                for _, dirt in dirt_folder:GetChildren() do
+                    local decal = dirt:FindFirstChildWhichIsA('Decal')
+                    if (not decal) or (decal.Transparency == 1) then
+                        continue
+                    end
+                    net['URE/Wash Dirt']:FireServer(dirt)
+                end
+            end
+            for _, instance in car_body:GetChildren() do
+                local name = instance.Name
+                if
+                    (table.find(rust_instances, instance.ClassName))
+                    and (instance.Material ~= 'Metal')
+                then
+                    fix_rust:FireServer(instance)
+                    paint_rust:FireServer(instance, paint_color)
+                end
+                if (name == 'FuelCap') and (instance:GetAttribute('Open')) then
+                    net['RE/Fuel Car']:FireServer(instance, 100)
+                end
+                if
+                    (name:find('Wheel'))
+                    and (instance:FindFirstChild('Deflated'))
+                then
+                    net['URE/Inflate Wheel']:FireServer(instance)
+                end
+                local remote = instance:FindFirstChildWhichIsA('RemoteEvent')
+                local part_type = instance:GetAttribute('PartType')
+                if remote and part_type then
+                    remote:FireServer()
+                    local part_data = {
+                        ['type'] = part_type,
+                        ['remote'] = remote,
+                    }
+                    table.insert(car.required_parts, part_data)
+                end
+            end
+            for _, instance in object:GetDescendants() do
+                if
+                    (table.find(rust_instances, instance.ClassName))
+                    and (instance.Material ~= 'Metal')
+                then
+                    fix_rust:FireServer(instance)
+                    paint_rust:FireServer(instance, paint_color)
+                end
+                if instance.Name == 'Fog' then
+                    local decal = instance:FindFirstChildWhichIsA('Decal')
+                    if (not decal) or (decal.Transparency == 1) then
+                        continue
+                    end
+                    net['URE/Clean Fog']:FireServer(instance)
+                end
+            end
+            local parts = car.required_parts
+            if #parts > 0 then
+                for _, part in parts do
+                    local part_type = part.type
+                    net['RE/BuyItem']:FireServer('CarParts', part_type)
+                    task.wait(0.15)
+                    humanoid:UnequipTools()
+                    task.wait(0.15)
+                    local tool =
+                        local_player.Backpack:WaitForChild(part_type, 2)
+                    if not tool then
+                        print('failed to place tool :(')
+                        continue
+                    end
+                    humanoid:EquipTool(tool)
+                    task.wait(0.15)
+                    part.remote:FireServer()
+                end
+            end
+            task.wait(1)
+            net['RE/Finish Order']:FireServer(car.order_index)
+        end
+        task.wait()
+    until not getgenv().farm
+end
