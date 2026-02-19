@@ -1,0 +1,26 @@
+if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HitBox") then
+    local lastPos = game.Players.LocalPlayer.Character.HitBox.CFrame
+    local WC = game.Players.LocalPlayer.Character:FindFirstChild("HitBox").WeldConstraint
+    local cloneOf_WC = WC:Clone()
+    WC:Destroy()
+    for i,v in pairs(game.Players:GetPlayers()) do
+        if v ~= game.Players.LocalPlayer and v.Character and game.Players.LocalPlayer.Character and v.Character:FindFirstChild("HitBox") and game.Players.LocalPlayer.Character:FindFirstChild("HitBox") then
+            for _ = 1, 10 do
+                if not v.Character and game.Players.LocalPlayer.Character and v.Character:FindFirstChild("HitBox") and game.Players.LocalPlayer.Character.FindFirstChild("HitBox") then break end
+                game.Players.LocalPlayer.Character.HitBox.CFrame = v.Character.HitBox.CFrame
+                game.Players.LocalPlayer.Character.HitBox.Velocity = Vector3.new(500,500,500)
+                task.wait()
+            end
+        end
+    end
+    game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = lastPos
+    task.wait(0.1)
+    if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HitBox") then
+        game.Players.LocalPlayer.Character.HitBox.Velocity = Vector3.zero
+        game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = lastPos
+        game.Players.LocalPlayer.Character.HitBox.CFrame = lastPos
+        cloneOf_WC.Parent = game.Players.LocalPlayer.Character.HitBox
+    end
+end
